@@ -1,25 +1,19 @@
 # the-last-table-editor
-I hote this will be "my very last try" to create a generic web-based table editor ;)
 
-------------------------------------------------------------------------------------------
+## Project setup
+```
+npm install
+```
 
-## Toolset:
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
 
-### Backend:
-- Python3  
-- flask mini-framework for API handling
+### Compiles and minifies for production
+```
+npm run build
+```
 
-### Frontend:
-- VueJS "Create-App" Framework
-- HTML5 + handmade CSS4 Styles
-
-### Web-Server:
-- uWSGI to provide SCS (Self-Containing-System)
-
-------------------------------------------------------------------------------------------
-
-## Installation:
-### Python Setup Tools
-xyz
-### Dockerfile
-xyz
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
