@@ -1,20 +1,19 @@
 <template>
   <div>
-    <h2>This is an About page</h2>
+    <h2>This is an Tables page</h2>
   </div>
 </template>
-
 
 <script>
 
 export default {
-  name: 'About',
+  name: 'Tables',
   components: {
 
   },
   data(){
     return {
-      name: "test"
+      name: "Tables"
     }
   },
   mounted: function(){
@@ -27,3 +26,4 @@ export default {
 
 }
 </script>
+

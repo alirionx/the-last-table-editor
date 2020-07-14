@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>This is an About page</h2>
+    <h2>This is an Configure page</h2>
   </div>
 </template>
 
@@ -8,13 +8,13 @@
 <script>
 
 export default {
-  name: 'About',
+  name: 'Configure',
   components: {
 
   },
   data(){
     return {
-      name: "test"
+      name: "Configure"
     }
   },
   mounted: function(){
