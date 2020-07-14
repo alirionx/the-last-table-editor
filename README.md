@@ -14,7 +14,7 @@ I hote this will be "my very last try" to create a generic web-based table edito
 ### Web-Server:
 - uWSGI to provide SCS (Self-Containing-System)
 
-#-------------------------------------
+ 
 
 ## Installation:
 ### Python Setup Tools
