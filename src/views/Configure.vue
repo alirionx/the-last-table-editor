@@ -1,9 +1,29 @@
 <template>
   <div>
-    <h2>This is an Configure page</h2>
+    <h3>This is an Configure page</h3>
+    <table css="std">
+      <thead>
+        <tr>
+          <th v-for="(col, idx) in defi" :key="idx" v-bind:style="{ textAlign: col.align }">
+            {{ col.hl }}
+          </th>
+          <th>Act</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(row, idx) in data" :key="idx">
+          <td v-for="(col, idx2) in defi" :key="idx2" v-bind:style="{ textAlign: col.align }">
+            {{ row[col.col] }}
+          </td>
+          <td>
+            <button>x</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
   </div>
 </template>
-
 
 <script>
 
@@ -14,16 +34,21 @@ export default {
   },
   data(){
     return {
-      name: "Configure"
+      name: "Tables",
+      defi: [],
+      data: []
     }
   },
   mounted: function(){
-    fetch('/api/test') 
+    fetch('/api/config/get') 
       .then(resp => resp.json())
-      .then(data => {
-        console.log(data);
+      .then(resObj => {
+        console.log(resObj);
+        this.defi = resObj.data.defi;
+        this.data = resObj.data.data;
       });
   }
 
 }
 </script>
+

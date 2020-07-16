@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>This is an Tables page</h2>
+    <h3>This is an Tables page</h3>
   </div>
 </template>
 
@@ -13,14 +13,16 @@ export default {
   },
   data(){
     return {
-      name: "Tables"
+      name: "Tables",
+      defi: [],
+      data: []
     }
   },
   mounted: function(){
     fetch('/api/test') 
       .then(resp => resp.json())
-      .then(data => {
-        console.log(data);
+      .then(resObj => {
+        console.log(resObj);
       });
   }
 

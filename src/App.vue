@@ -72,7 +72,7 @@ export default {
 .headBlock div[css=menuBar]{
   position:absolute;
   right:0.5%;
-  bottom: 4px;
+  bottom: 2px;
   min-width: 100px;
 }
 .headBlock div[css=menuBar] div{
@@ -91,5 +91,28 @@ export default {
 }
 .headBlock div[css=menuBar] div:last-child{
   border-right: none;
+}
+
+table[css=std]{
+  min-width: 600px;
+  margin: 30px auto 20px auto;
+  font-size: 16px;
+}
+table[css=std] th {
+  padding:8px;
+  background-color: #333;
+  color: #fff;
+  font-weight: bold;
+}
+table[css=std] td {
+  padding:8px;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #777;
+}
+table[css=std] td:last-child {
+  text-align: center;
+  width: 20px;
+  position:relative;
 }
 </style>
