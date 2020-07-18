@@ -22,6 +22,7 @@
               v-bind:callback="set_menu" />
             <MenuFrame 
               v-if="menu == idx" 
+              v-bind:id="idx" 
               v-bind:callback="()=>{}" 
               v-bind:type="'configure'" 
               />
@@ -65,7 +66,7 @@ export default {
 
     set_menu(tbl=Number){
       this.menu = tbl;
-      console.log("actibe Menu: "+this.menu)
+      //console.log("active Menu: "+this.menu)
     },
 
     reset_menu(event){

@@ -11,6 +11,7 @@
 export default {
   name: 'MenuBtn',
   props: {
+    id: Number,
     type: String,
     callback: Function
   },
@@ -24,7 +25,7 @@ export default {
   },
   methods:{
     action_fw(act){
-      console.log(act);
+      console.log(act + ": " + this.id);
     }
   }
 }
