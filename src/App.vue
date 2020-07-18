@@ -4,7 +4,11 @@
       <!--router-link to="/">Home</router-link-->
       <div css="hl">The - Last - Table - Editor</div>
       <div css="menuBar">
-        <div v-for="(elm, idx) in menu" :key="idx" v-on:click="set_hash(elm['lnk'])">{{ elm['txt'] }}</div>
+        <div 
+          v-for="(elm, idx) in menu" :key="idx" 
+          v-on:click="set_hash(elm['lnk'])" 
+          v-bind:style="chk_active(elm['lnk'])" 
+        >{{ elm['txt'] }}</div>
       </div>
     </div>
     <router-view/>
@@ -29,12 +33,24 @@ export default {
           "txt": "About",
           "lnk": "/about"
         }
-      ]
+      ],
+      active: String,
+
     }
   },
   methods:{
     set_hash(lnk="/"){
       window.location.hash = lnk;
+      this.active = lnk;
+      //console.log(this.active);
+    },
+    chk_active(lnk){
+      if (window.location.hash === "#"+lnk){
+        return { textDecoration: 'underline' };
+      }
+      else{
+        return {};
+      }
     }
   }
 }

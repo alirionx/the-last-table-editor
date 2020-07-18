@@ -53,7 +53,7 @@ def api_test():
 
   resp = obj_to_json_http(dataObj)
   return resp
-  
+
 #-----------------------------------------------
 
 @app.route('/api/config/get', methods=['GET'])
