@@ -69,10 +69,10 @@ export default {
   position: relative;
 }
 .headBlock{
-  position: absolute;
-  left: -8px;
-  top: -8px;
-  width: 101.5%;
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  width: 100%;
   height: 90px;
   background-color: #2c3e50;
   text-align: center;
@@ -131,4 +131,89 @@ table[css=std] td:last-child {
   width: 20px;
   position:relative;
 }
+.mainBtn{
+  padding: 4px;
+  min-width: 100px;
+  margin:auto;
+  border: 1px solid #000;
+  border-radius: 4px;
+  background-color: #444;
+  color: #fff;
+  text-align: center;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.5s;
+}
+.mainBtn:hover{
+  background-color: #111;
+}
+.blocker{
+  position:absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 80vh;
+  background-color: rgba(255,255,255, 0.8);
+  text-align: center;
+  z-index: 2;
+}
+.actionForm{
+  display:inline-block;
+  margin: auto;
+  padding:1.5%;
+  min-width: 600px;
+  min-height: 80px;
+  background-color: #fafafa;
+  border: 1px solid #666;
+  border-radius: 8px;
+  box-shadow: 1px 10px 20px #444;
+  font-size: 14px;
+}
+.actionForm div[css=hl]{
+  width: 97%;
+  padding:1.5%;
+  margin: auto auto 14px auto;
+  border-radius: 4px;
+  background-color:#333;
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+}
+.actionForm div[css=iptHl]{
+  text-align: left;
+  margin: 12px auto 4px 10px;
+  color: #000;
+  font-weight: bold;
+  *text-decoration: underline;
+}
+.actionForm button{
+  padding: 6px;
+  min-width: 120px;
+  margin:12px;
+  border: 1px solid #000;
+  border-radius: 4px;
+  background-color: #444;
+  color: #fff;
+  text-align: center;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.5s;
+}
+.actionForm button:hover{
+  background-color: #111;
+}
+.actionForm input[type=text]{
+  width: 94%;
+  margin: auto auto 14px auto;
+  padding: 1.5%;
+  text-align: left;
+  border: 0.5px solid #aaa;
+  background-color: #fff;
+  box-shadow: 0px 1px 3px #aaa;
+  transition: background-color 0.5s;
+}
+.actionForm input[type=text]:focus{
+  background-color: rgb(232, 241, 255);
+}
+
 </style>

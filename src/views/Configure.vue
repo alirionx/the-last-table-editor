@@ -1,5 +1,11 @@
 <template>
-  <div>
+  <div style="position:relative;">
+    <TableParams 
+      v-if="activeEdit !== null" 
+      v-bind:defiIn="defi" 
+      v-bind:dataIn="data[activeEdit]" 
+      v-bind:callback="()=>{activeEdit = null }"
+    />
     <h3>This is an Configure page</h3>
     <table css="std" v-on:click="(event)=>{reset_menu(event)}">
       <thead>
@@ -16,40 +22,52 @@
             {{ row[col.col] }}
           </td>
           <td component="yes">
-            <MenuBtn 
+            <ActionMenu
               v-bind:idx="idx"
-              v-bind:menu="menu"
-              v-bind:callback="set_menu" />
-            <MenuFrame 
-              v-if="menu == idx" 
-              v-bind:id="idx" 
-              v-bind:callback="()=>{}" 
-              v-bind:type="'configure'" 
-              />
+              v-bind:activeMenu="activeMenu"
+              v-bind:actions="actions"
+              v-bind:set_menu_callback="set_menu"
+            />
           </td>
         </tr>
       </tbody>
     </table>
+    <button class="mainBtn" v-on:click="this.call_add" >add table</button>
 
   </div>
 </template>
 
 <script>
-import MenuBtn from '../components/MenuBtn.vue'
-import MenuFrame from '../components/MenuFrame.vue'
+import ActionMenu from '../components/ActionMenu.vue'
+import TableParams from '../components/TableParams.vue'
 
 export default {
   name: 'Configure',
   components: {
-    MenuBtn,
-    MenuFrame
+    ActionMenu,
+    TableParams
   },
   data(){
     return {
       name: "Tables",
       defi: [],
       data: [],
-      menu: Number
+      activeMenu: Number,
+      actions: [
+        {
+          txt: "edit",
+          func: this.call_edit,
+        },
+        {
+          txt: "configure",
+          func: this.call_configure,
+        },
+        {
+          txt: "delete",
+          func: this.call_delete,
+        }
+      ],
+      activeEdit: null
     }
   },
   methods:{
@@ -65,7 +83,7 @@ export default {
     },
 
     set_menu(tbl=Number){
-      this.menu = tbl;
+      this.activeMenu = tbl;
       //console.log("active Menu: "+this.menu)
     },
 
@@ -74,11 +92,28 @@ export default {
       if(tgtElm.parentNode !== null){ //SCHROTT
         if( !tgtElm.parentNode.hasAttribute("component") ){
           //console.log(tgtElm.tagName);
-          this.menu = Number;
+          this.activeMenu = Number;
         }
       }    
-    }
+    },
+
+    call_edit(idx=null){
+      console.log("Edit table Params of: "+ this.activeMenu);
+      this.activeEdit = idx;
+    },
+    call_configure(){
+      console.log("Configure table: "+ this.activeMenu);
+    },
+    call_delete(){
+      console.log("Delete table: "+ this.activeMenu);
+    },
+    call_add(){
+      console.log("Add table: ");
+      this.activeMenu = Number;
+      this.activeEdit = "new";
+    },
   },
+
   mounted: function(){
     this.call_config();
   }
