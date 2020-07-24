@@ -2,9 +2,11 @@
   <div style="position:relative;">
     <TableParams 
       v-if="activeEdit !== null" 
+      v-bind:idx="activeEdit" 
       v-bind:defiIn="defi" 
       v-bind:dataIn="data[activeEdit]" 
       v-bind:callback="()=>{activeEdit = null }"
+      v-bind:refresh="call_config"
     />
     <h3>This is an Configure page</h3>
     <table css="std" v-on:click="(event)=>{reset_menu(event)}">
@@ -50,7 +52,36 @@ export default {
   data(){
     return {
       name: "Tables",
-      defi: [],
+      defi: [
+        {
+          col: "id",
+          hl: "Id",
+          align: "center",
+          type: "static",
+          manda: true
+        },
+        {
+          col: "name",
+          hl: "Table name",
+          align: "left",
+          type: "text",
+          manda: true
+        },
+        {
+          col: "description",
+          hl: "Description",
+          align: "left",
+          type: "text",
+          manda: false
+        },
+        {
+          col: "comment",
+          hl: "Comment",
+          align: "left",
+          type: "text",
+          manda: false
+        }
+      ],
       data: [],
       activeMenu: Number,
       actions: [
@@ -77,8 +108,8 @@ export default {
       .then(resp => resp.json())
       .then(resObj => {
         console.log(resObj);
-        this.defi = resObj.data.defi;
-        this.data = resObj.data.data;
+        //this.defi = resObj.data.defi;
+        this.data = resObj.data;
       });
     },
 

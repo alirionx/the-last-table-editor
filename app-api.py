@@ -58,44 +58,11 @@ def api_test():
 
 @app.route('/api/config/get', methods=['GET'])
 def api_config_get():
-  
-  tblDataObj = {
-    "defi": [
-      {
-        "col": "id",
-        "hl": "Id",
-        "align": "center",
-        "manda": True
-      },
-      {
-        "col": "name",
-        "hl": "Table name",
-        "align": "left",
-        "manda": True
-      },
-      {
-        "col": "description",
-        "hl": "Description",
-        "align": "left",
-        "manda": False
-      }
-      ,
-      {
-        "col": "comment",
-        "hl": "Comment",
-        "align": "left",
-        "manda": False
-      }
-    ],
-    "data": []
-  }
-
-  objList = ["definition", "data"]
-  missingParas = list
 
   #----------------------------------
+  tblDataObj = []
   for dataFileName in sorted(os.listdir(apiDataPath)):
-    print(dataFileName)
+    #print(dataFileName)
     curPath = os.path.join(apiDataPath, dataFileName)
     try:
       fileObj = open(curPath, "r")
@@ -105,25 +72,13 @@ def api_config_get():
       print("Table data file " + curPath + "damaged or not readable") 
       print(str(err))
       continue
-
-    missingParas = []
-
-    for col in tblDataObj["defi"]:
-      objList.append(col["col"])
-
-    for col in objList:
-      if col not in fileDataObj:
-        missingParas.append(col)
-
-    if len(missingParas) > 0:
-      print("missing parameter [" + ", ".join(missingParas) + "] in Table data file " + curPath)
-      continue
     
-    rowObj = {}
-    for col in tblDataObj["defi"]:
-      rowObj[col["col"]] = fileDataObj[col["col"]]
+    if not isinstance(fileDataObj, dict):
+      print("File is in wrong format. must be a dictionary") 
+      continue
 
-    tblDataObj["data"].append(rowObj)
+    tblDataObj.append(fileDataObj)
+
   #----------------------------------
 
   dataObj = {
@@ -131,6 +86,60 @@ def api_config_get():
     "status": "Ok",
     "timestamp": curTimestamp,
     "data": tblDataObj
+  }
+
+  resp = obj_to_json_http(dataObj)
+  return resp
+
+#-----------------------------------------------
+
+
+@app.route('/api/config/set', methods=['POST'])
+def api_config_set():
+
+  #----------------------------------
+  
+  try:
+    dataIn = json.loads(request.data)
+  except Exception as err:
+      msg = "Failed to load json input from post request"
+      print(msg) 
+      print(str(err))
+      return msg, 400
+    
+  #----------------------------------
+
+  try:
+    tblId = int(dataIn["id"])
+    flObj = open(os.path.join(apiDataPath, "t"+str(tblId)+".json"), "r")
+    print(tblId)
+  except Exception as err:
+    msg = "invalid ID: " + json.dumps(dataIn, indent=2)
+    print(msg) 
+    print(str(err))
+    return msg, 400
+
+  #----------------------------------
+
+  dataObj = json.loads(flObj.read())
+  flObj.close()
+  print(dataObj)
+
+  for key, val in dataIn.items():
+    dataObj[key] = val
+
+  jsonStr = json.dumps(dataObj, indent=2)
+  flObj = open(os.path.join(apiDataPath, "t"+str(tblId)+".json"), "w")
+  flObj.write(jsonStr)
+
+
+  #----------------------------------
+
+  dataObj = {
+    "request-url": "/api/config/set",
+    "status": "Ok",
+    "timestamp": curTimestamp,
+    "data": dataIn
   }
 
   resp = obj_to_json_http(dataObj)

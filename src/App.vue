@@ -168,6 +168,7 @@ table[css=std] td:last-child {
   border-radius: 8px;
   box-shadow: 1px 10px 20px #444;
   font-size: 14px;
+  *opacity: 0.5;
 }
 .actionForm div[css=hl]{
   width: 97%;
@@ -215,5 +216,7 @@ table[css=std] td:last-child {
 .actionForm input[type=text]:focus{
   background-color: rgb(232, 241, 255);
 }
-
+.actionForm input:disabled{
+  background-color: #eee;
+}
 </style>
