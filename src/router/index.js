@@ -11,9 +11,14 @@ Vue.use(VueRouter)
     component: Tables
   },
   {
-    path: '/config',
+    path: '/configure',
     name: 'Configure',
     component: () => import('../views/Configure.vue')
+  },
+  {
+    path: '/config/tableparas/:id',
+    name: 'Tableparas',
+    component: () => import('../views/TableParas.vue')
   },
   {
     path: '/about',

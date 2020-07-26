@@ -33,6 +33,33 @@ def obj_to_json_http(dataObj):
     mimetype="application/json")
   return resp
 
+#----------------------------------------------
+
+def get_table_paras_obj():
+
+  tblDataObj = []
+  for dataFileName in sorted(os.listdir(apiDataPath)):
+    #print(dataFileName)
+    if not dataFileName.endswith(".json"):
+      continue
+
+    curPath = os.path.join(apiDataPath, dataFileName)
+    try:
+      fileObj = open(curPath, "r")
+      fileStr = fileObj.read()
+      fileDataObj = json.loads(fileStr)
+    except Exception as err:
+      print(str(err))
+      print("Table data file " + curPath + "damaged or not readable") 
+      continue
+    
+    if not isinstance(fileDataObj, dict):
+      print("File is in wrong format. must be a dictionary") 
+      continue
+
+    tblDataObj.append(fileDataObj)
+
+  return tblDataObj
 
 #-HTML Render Section-----------------------------------------------------
 
@@ -54,32 +81,12 @@ def api_test():
   resp = obj_to_json_http(dataObj)
   return resp
 
-#-----------------------------------------------
+#--------------------------------------------------------------
 
 @app.route('/api/config/get', methods=['GET'])
 def api_config_get():
 
-  #----------------------------------
-  tblDataObj = []
-  for dataFileName in sorted(os.listdir(apiDataPath)):
-    #print(dataFileName)
-    curPath = os.path.join(apiDataPath, dataFileName)
-    try:
-      fileObj = open(curPath, "r")
-      fileStr = fileObj.read()
-      fileDataObj = json.loads(fileStr)
-    except Exception as err:
-      print("Table data file " + curPath + "damaged or not readable") 
-      print(str(err))
-      continue
-    
-    if not isinstance(fileDataObj, dict):
-      print("File is in wrong format. must be a dictionary") 
-      continue
-
-    tblDataObj.append(fileDataObj)
-
-  #----------------------------------
+  tblDataObj = get_table_paras_obj()
 
   dataObj = {
     "request-url": "/api/config/get",
@@ -91,14 +98,48 @@ def api_config_get():
   resp = obj_to_json_http(dataObj)
   return resp
 
-#-----------------------------------------------
+#--------------------------------------------------------------
 
-
-@app.route('/api/config/set', methods=['POST'])
-def api_config_set():
+@app.route('/api/tableparas/get/<tblId>', methods=['GET'])
+def api_tableparas_get(tblId):
 
   #----------------------------------
-  
+  confPath = os.path.join(apiDataPath, 't' + str(tblId) + '.json')
+  try:
+    fileObj = open(confPath, "r")
+    fileStr = fileObj.read()
+    fileDataObj = json.loads(fileStr)
+  except Exception as err:
+    msg = "Table data file " + confPath + "damaged or not readable"
+    print(msg) 
+    print(str(err))
+    return msg, 404
+    
+  if not isinstance(fileDataObj, dict):
+    msg = "File is in wrong format. must be a dictionary"
+    print(msg) 
+    return msg, 400
+
+
+  #----------------------------------
+
+  dataObj = {
+    "request-url": "/api/tableparas/get/"+tblId,
+    "status": "Ok",
+    "timestamp": curTimestamp,
+    "data": fileDataObj,
+    "id": tblId
+  }
+
+  resp = obj_to_json_http(dataObj)
+  return resp
+
+#--------------------------------------------------------------
+
+@app.route('/api/tableparas/add', methods=['POST'])
+def api_tableparas_add():
+
+  #----------------------------------
   try:
     dataIn = json.loads(request.data)
   except Exception as err:
@@ -106,17 +147,100 @@ def api_config_set():
       print(msg) 
       print(str(err))
       return msg, 400
-    
+  
+  print(dataIn)
+  #----------------------------------
+  try:
+    tblId = dataIn["id"]
+  except Exception as err:
+    msg = "invalid ID: " + json.dumps(dataIn, indent=2)
+    print(str(err))
+    return msg, 400
+
+  if tblId != "new":
+    msg = "invalid ID: " + str(tblId)
+    print(msg)
+    return msg, 400
+
   #----------------------------------
 
+  tblDataObj = get_table_paras_obj()
+  idList = []
+  for tblParas in tblDataObj:
+    idList.append(tblParas["id"])
+
+  newId = False
+  i = 0
+  while not newId:
+    if i not in idList:
+      newId = i
+    i += 1
+  print(newId)
+  
+  #----------------------------------
+  dataObj = {}
+  for key, val in dataIn.items():
+    dataObj[key] = val
+
+  dataObj["id"] = newId
+  dataObj["definition"] = []
+  dataObj["data"] = []
+
+  jsonStr = json.dumps(dataObj, indent=2)
+  
+  #----------------------------------
+
+  newPath = os.path.join(apiDataPath, "t"+str(newId)+".json")
+  try:
+    flObj = open(newPath, "w")
+  except Exception as err:
+    msg = "Unable to create config file for new table " + confPath
+    print(str(err))
+    print(msg) 
+    return msg, 400
+
+  flObj.write(jsonStr)
+  flObj.close()
+  print(dataObj)
+
+  #----------------------------------
+
+  resObj = {
+    "request-url": "/api/tableparas/add",
+    "status": "Ok",
+    "timestamp": curTimestamp,
+    "data": dataObj
+  }
+
+  resp = obj_to_json_http(resObj)
+  return resp
+
+
+#--------------------------------------------------------------
+
+@app.route('/api/tableparas/edit', methods=['POST'])
+def api_tableparas_edit():
+
+  #----------------------------------
+  
+  try:
+    dataIn = json.loads(request.data)
+  except Exception as err:
+      msg = "Failed to load json input from post request"
+      print(str(err))
+      print(msg) 
+      return msg, 400
+    
+  #----------------------------------
   try:
     tblId = int(dataIn["id"])
-    flObj = open(os.path.join(apiDataPath, "t"+str(tblId)+".json"), "r")
+    flPath = os.path.join(apiDataPath, "t"+str(tblId)+".json")
+    flObj = open(flPath, "r")
     print(tblId)
   except Exception as err:
     msg = "invalid ID: " + json.dumps(dataIn, indent=2)
-    print(msg) 
     print(str(err))
+    print(msg) 
     return msg, 400
 
   #----------------------------------
@@ -132,7 +256,6 @@ def api_config_set():
   flObj = open(os.path.join(apiDataPath, "t"+str(tblId)+".json"), "w")
   flObj.write(jsonStr)
 
-
   #----------------------------------
 
   dataObj = {
@@ -145,7 +268,60 @@ def api_config_set():
   resp = obj_to_json_http(dataObj)
   return resp
 
-#-----------------------------------------------
+#--------------------------------------------------------------
+@app.route('/api/tableparas/delete', methods=['POST'])
+def api_tableparas_delete():
+
+  #----------------------------------
+  
+  try:
+    dataIn = json.loads(request.data)
+  except Exception as err:
+      msg = "Failed to load json input from post request"
+      print(str(err))
+      print(msg) 
+      return msg, 400
+    
+  #----------------------------------
+  try:
+    tblId = int(dataIn["id"])
+    flPath = os.path.join(apiDataPath, "t"+str(tblId)+".json")
+  except Exception as err:
+    msg = "invalid ID: " + json.dumps(dataIn, indent=2)
+    print(str(err))
+    print(msg) 
+    return msg, 400
+
+  if not os.path.isfile(flPath):
+    msg = "invalid ID (file does not exist): " + flPath
+    print(str(err))
+    print(msg) 
+    return msg, 400
+
+  #----------------------------------
+
+  try:
+    os.remove(flPath)
+  except Exception as err:
+    msg = "Failed to delete file: " + flPath
+    print(str(err))
+    print(msg) 
+    return msg, 400
+
+  #----------------------------------
+
+  dataObj = {
+    "request-url": "/api/tableparas/delete",
+    "status": "Ok",
+    "timestamp": curTimestamp,
+    "data": dataIn,
+    "file": flPath
+  }
+
+  resp = obj_to_json_http(dataObj)
+  return resp
+
+#-------------------------------------------------------
 
 
 #-App Runner--------------------------------------------------------------

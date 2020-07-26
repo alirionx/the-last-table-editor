@@ -12,7 +12,7 @@ export default {
   },
   data(){
     return {
-      name: "plain"
+      name: "plaim"
     }
   },
   methods:{

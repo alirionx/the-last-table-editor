@@ -1,12 +1,10 @@
 <template>
   <div style="position:relative;">
-    <TableParams 
-      v-if="activeEdit !== null" 
-      v-bind:idx="activeEdit" 
-      v-bind:defiIn="defi" 
-      v-bind:dataIn="data[activeEdit]" 
-      v-bind:callback="()=>{activeEdit = null }"
-      v-bind:refresh="call_config"
+    <MsgBox 
+      v-if="msgText !== null"
+      v-bind:msg="msgText" 
+      v-bind:callback="msgCallback" 
+      v-bind:confirm="msgConfirm"   
     />
     <h3>This is an Configure page</h3>
     <table css="std" v-on:click="(event)=>{reset_menu(event)}">
@@ -41,13 +39,13 @@
 
 <script>
 import ActionMenu from '../components/ActionMenu.vue'
-import TableParams from '../components/TableParams.vue'
+import MsgBox from '../components/MsgBox.vue'
 
 export default {
   name: 'Configure',
   components: {
     ActionMenu,
-    TableParams
+    MsgBox
   },
   data(){
     return {
@@ -57,29 +55,21 @@ export default {
           col: "id",
           hl: "Id",
           align: "center",
-          type: "static",
-          manda: true
         },
         {
           col: "name",
           hl: "Table name",
           align: "left",
-          type: "text",
-          manda: true
         },
         {
           col: "description",
           hl: "Description",
           align: "left",
-          type: "text",
-          manda: false
         },
         {
           col: "comment",
           hl: "Comment",
           align: "left",
-          type: "text",
-          manda: false
         }
       ],
       data: [],
@@ -98,7 +88,9 @@ export default {
           func: this.call_delete,
         }
       ],
-      activeEdit: null
+      msgText: null,
+      msgCallback: Function,
+      msgConfirm: Function
     }
   },
   methods:{
@@ -108,7 +100,6 @@ export default {
       .then(resp => resp.json())
       .then(resObj => {
         console.log(resObj);
-        //this.defi = resObj.data.defi;
         this.data = resObj.data;
       });
     },
@@ -130,18 +121,52 @@ export default {
 
     call_edit(idx=null){
       console.log("Edit table Params of: "+ this.activeMenu);
-      this.activeEdit = idx;
+      window.location.hash = '/config/tableparas/'+idx
     },
+
     call_configure(){
       console.log("Configure table: "+ this.activeMenu);
     },
+
     call_delete(){
-      console.log("Delete table: "+ this.activeMenu);
+      var curId = this.activeMenu;
+      //console.log("Delete table: "+ curId);
+      this.msgText = "Do you really want to delete Table " + this.data[curId]["name"] + "?";
+      this.msgCallback = () =>{
+        this.msgText = null;
+        this.msgCallback = Function;
+        this.msgConfirm = Function;
+      }
+      this.msgConfirm = () =>{
+        this.submit_delete(curId);
+      }
+
     },
+
+    submit_delete(id){
+      var jsonData = JSON.stringify( { id: id } );
+      fetch('/api/tableparas/delete', {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonData,
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Success:', data);
+        this.call_config();
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        alert("Something went wrong while writing changes to api");
+      });
+    },
+
     call_add(){
-      console.log("Add table: ");
       this.activeMenu = Number;
-      this.activeEdit = "new";
+      //this.activeEdit = "new";
+      window.location.hash = '/config/tableparas/new'
     },
   },
 
