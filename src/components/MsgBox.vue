@@ -3,9 +3,11 @@
     <div class="msgBox">
       <div css="hl">System Message</div>
       <div css="msg">{{msg}}</div>
-      <button v-if="confirm !== undefined" v-on:click="callback(); confirm()">ok</button>
+      <div v-if="confirm != undefined">
+        <button v-on:click="callback(); confirm()">ok</button>
+        <button v-on:click="callback">cancel</button>
+      </div>
       <button v-else v-on:click="callback">ok</button>
-      <button v-on:click="callback">cancel</button>
     </div>  
   </div>
 </template>

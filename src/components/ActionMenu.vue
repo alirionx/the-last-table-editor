@@ -6,7 +6,7 @@
   </div>
   <div v-else class="menuBtnActive" v-on:click="()=>{}" >
     <div class="menuFrame">
-      <div v-for="(act, idx2) in menuActions" :key="idx2" v-on:click="act.func(idx)" >{{ act.txt }}</div>
+      <div v-for="(act, idx2) in menuActions" :key="idx2" v-on:click="act.func()" >{{ act.txt }}</div>
     </div>
   </div>
 </template>

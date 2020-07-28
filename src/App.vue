@@ -111,7 +111,7 @@ export default {
 
 table[css=std]{
   min-width: 600px;
-  margin: 30px auto 20px auto;
+  margin: 30px auto 10px auto;
   font-size: 16px;
 }
 table[css=std] th {
@@ -119,6 +119,10 @@ table[css=std] th {
   background-color: #333;
   color: #fff;
   font-weight: bold;
+}
+table[css=std] th[css=left] {
+  text-align: right;
+  width:140px;
 }
 table[css=std] td {
   padding:8px;
@@ -134,7 +138,7 @@ table[css=std] td:last-child {
 .mainBtn{
   padding: 4px;
   min-width: 100px;
-  margin:auto;
+  margin:20px 16px auto 16px;
   border: 1px solid #000;
   border-radius: 4px;
   background-color: #444;

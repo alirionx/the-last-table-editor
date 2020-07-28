@@ -321,7 +321,65 @@ def api_tableparas_delete():
   resp = obj_to_json_http(dataObj)
   return resp
 
-#-------------------------------------------------------
+#--------------------------------------------------------------
+
+@app.route('/api/tableconfig/apply/<tblId>', methods=['POST'])
+def api_tableconfig_apply(tblId):
+
+  #----------------------------------
+  confPath = os.path.join(apiDataPath, 't' + str(tblId) + '.json')
+  try:
+    fileObj = open(confPath, "r")
+    fileStr = fileObj.read()
+    fileDataObj = json.loads(fileStr)
+    fileObj.close()
+  except Exception as err:
+    msg = "Table data file " + confPath + "damaged or not readable"
+    print(msg) 
+    print(str(err))
+    return msg, 404
+    
+  if not isinstance(fileDataObj, dict):
+    msg = "File is in wrong format. must be a dictionary"
+    print(msg) 
+    return msg, 400
+
+  #----------------------------------
+  try:
+    dataIn = json.loads(request.data)
+  except Exception as err:
+      msg = "Failed to load json input from post request"
+      print(str(err))
+      print(msg) 
+      return msg, 400
+    
+  #----------------------------------
+  try:
+    fileDataObj["definition"] = dataIn
+    jsonStr = json.dumps(fileDataObj, indent=2)
+    fileObj = open(confPath, "w")
+    fileObj.write(jsonStr)
+    fileObj.close()
+  except:
+    msg = "Failed to write defi data to file"
+    print(str(err))
+    print(msg) 
+    return msg, 400
+    
+  #----------------------------------
+
+  dataObj = {
+    "request-url": "/api/tableconfig/apply/"+tblId,
+    "status": "Ok",
+    "timestamp": curTimestamp,
+    "data": fileDataObj,
+    "id": tblId
+  }
+
+  resp = obj_to_json_http(dataObj)
+  return resp
+
+#--------------------------------------------------------------
 
 
 #-App Runner--------------------------------------------------------------

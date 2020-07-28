@@ -119,13 +119,14 @@ export default {
       }    
     },
 
-    call_edit(idx=null){
+    call_edit(){
       console.log("Edit table Params of: "+ this.activeMenu);
-      window.location.hash = '/config/tableparas/'+idx
+      window.location.hash = '/config/tableparas/'+this.activeMenu
     },
 
     call_configure(){
       console.log("Configure table: "+ this.activeMenu);
+      window.location.hash = '/config/tableconfig/'+this.activeMenu
     },
 
     call_delete(){
