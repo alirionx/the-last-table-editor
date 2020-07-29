@@ -23,7 +23,7 @@
           </td>
           <td component="yes">
             <ActionMenu
-              v-bind:idx="idx"
+              v-bind:id="row.id"
               v-bind:activeMenu="activeMenu"
               v-bind:actions="actions"
               v-bind:set_menu_callback="set_menu"
@@ -131,8 +131,15 @@ export default {
 
     call_delete(){
       var curId = this.activeMenu;
+      for(var prop in this.data){ //Voll uncool!!!
+        var curData = this.data[prop]
+        if(curData["id"] === curId){
+          var tblName = curData["name"];
+          break;
+        }
+      }
       //console.log("Delete table: "+ curId);
-      this.msgText = "Do you really want to delete Table " + this.data[curId]["name"] + "?";
+      this.msgText = "Do you really want to delete Table " + tblName + "?";
       this.msgCallback = () =>{
         this.msgText = null;
         this.msgCallback = Function;

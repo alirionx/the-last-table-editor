@@ -151,6 +151,29 @@ table[css=std] td:last-child {
 .mainBtn:hover{
   background-color: #111;
 }
+.mainSelect{
+  padding: 8px;
+  min-width: 260px;
+  margin: auto;
+  border: 0.5px solid #666;
+  background-color: #fff;
+  box-shadow: 1px 1px 4px #777;
+  color: #000;
+  font-size: 16px;
+
+}
+
+.blocker{
+  position:absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 80vh;
+  background-color: rgba(255,255,255, 0.8);
+  text-align: center;
+  z-index: 2;
+}
+
 .actionForm{
   display:inline-block;
   margin: 40px auto auto auto;

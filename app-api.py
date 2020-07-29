@@ -322,7 +322,6 @@ def api_tableparas_delete():
   return resp
 
 #--------------------------------------------------------------
-
 @app.route('/api/tableconfig/apply/<tblId>', methods=['POST'])
 def api_tableconfig_apply(tblId):
 
@@ -368,6 +367,43 @@ def api_tableconfig_apply(tblId):
     
   #----------------------------------
 
+  dataObj = {
+    "request-url": "/api/tableconfig/apply/"+tblId,
+    "status": "Ok",
+    "timestamp": curTimestamp,
+    "data": fileDataObj,
+    "id": tblId
+  }
+
+  resp = obj_to_json_http(dataObj)
+  return resp
+
+
+#--------------------------------------------------------------
+@app.route('/api/table/get/<tblId>', methods=['GET'])
+def api_table_get(tblId):
+
+  #----------------------------------
+  confPath = os.path.join(apiDataPath, 't' + str(tblId) + '.json')
+  print(confPath)
+  try:
+    fileObj = open(confPath, "r")
+    fileStr = fileObj.read()
+    fileDataObj = json.loads(fileStr)
+    fileObj.close()
+  except Exception as err:
+    msg = "Table data file " + confPath + "damaged or not readable"
+    print(msg) 
+    print(str(err))
+    return msg, 404
+    
+  if not isinstance(fileDataObj, dict):
+    msg = "File is in wrong format. must be a dictionary"
+    print(msg) 
+    return msg, 400
+
+  #----------------------------------
+ 
   dataObj = {
     "request-url": "/api/tableconfig/apply/"+tblId,
     "status": "Ok",

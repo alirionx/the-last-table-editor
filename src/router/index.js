@@ -11,6 +11,11 @@ Vue.use(VueRouter)
     component: Tables
   },
   {
+    path: '/table/:id',
+    name: 'Table',
+    component: () => import('../views/Table.vue')
+  },
+  {
     path: '/configure',
     name: 'Configure',
     component: () => import('../views/Configure.vue')

@@ -1,12 +1,12 @@
 <template>
-  <div class="menuBtnFrame" v-if="activeMenu !== idx" v-on:click="set_menu_callback(idx)">
+  <div class="menuBtnFrame" v-if="activeMenu !== id" v-on:click="set_menu_callback(id)">
     <div></div>
     <div></div>
     <div></div>
   </div>
   <div v-else class="menuBtnActive" v-on:click="()=>{}" >
     <div class="menuFrame">
-      <div v-for="(act, idx2) in menuActions" :key="idx2" v-on:click="act.func()" >{{ act.txt }}</div>
+      <div v-for="(act, idx) in menuActions" :key="idx" v-on:click="act.func()" >{{ act.txt }}</div>
     </div>
   </div>
 </template>
@@ -16,7 +16,7 @@ export default {
   name: 'ActionMenu',
   props:{
     activeMenu: "",
-    idx: Number,
+    id: Number,
     set_menu_callback: Function,
     actions: Array
   },
