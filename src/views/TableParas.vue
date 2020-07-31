@@ -71,15 +71,17 @@ export default {
       });
     },
     validate(){
+      var chk = false;
       for(var prop in this.defi){
         var curDefi = this.defi[prop];
         var curCol = curDefi["col"]
         //console.log(curDefi.hl);
         if(curDefi.manda && (this.data[curCol] === "" || this.data[curCol] === undefined) ){
           this.redHighLight("ipt_"+curCol);
-          return;
+          chk = true;
         }
       }
+      if(chk){return;}
       this.submit();
     },
     redHighLight(elmId){

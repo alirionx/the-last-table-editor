@@ -233,7 +233,26 @@ table[css=std] td:last-child {
 .actionForm input[type=text]:focus{
   background-color: rgb(232, 241, 255);
 }
+.actionForm input[type=number]{
+  width: 140px;
+  display: table;
+  margin: auto auto 14px 1.8%;
+  padding: 1.5%;
+  text-align: left;
+  border: 0.5px solid #aaa;
+  background-color: #fff;
+  box-shadow: 0px 1px 3px #aaa;
+  transition: background-color 0.5s;
+}
+.actionForm input[type=number]:focus{
+  background-color: rgb(232, 241, 255);
+}
 .actionForm input:disabled{
   background-color: #eee;
+}
+.actionForm input[type=checkbox]{
+  display: table;
+  margin: 8px auto 22px 2.2%;
+  transform: scale(1.4);
 }
 </style>

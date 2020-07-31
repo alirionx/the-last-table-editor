@@ -8,10 +8,12 @@
     />
     <RowEdit 
       v-if="activeEdit !== null"
+      v-bind:tbl="id"
       v-bind:id="activeEdit"
       v-bind:defi="defi"   
       v-bind:dataIn="data[activeEdit]"
       v-bind:callback="reset_edit"
+      v-bind:refresh="call_table"
     />
     <h3>This is a Table page</h3>
     <table css="std" v-on:click="(event)=>{reset_menu(event)}">
@@ -31,7 +33,7 @@
         </td>
       </tr>
     </table>
-    <button class="mainBtn" v-on:click="call_add" >add table</button>
+    <button class="mainBtn" v-on:click="call_add" >add row</button>
   </div>
 </template>
 
@@ -109,10 +111,41 @@ export default {
     reset_edit(){
       this.activeEdit = null;
     },
+    
     call_delete(){
-      console.log("Delete Row: " + this.activeMenu);
-    }
+      var rowId = this.activeMenu;
+      this.msgText = "Do you really want to delete row ("+this.activeMenu+") ?";
+      this.msgCallback = ()=>{ this.msgText = null };
+      this.msgConfirm = ()=>{ this.submit_delete(rowId) };
+    },
+    submit_delete(rowId){
+      var reqUrl = '/api/table/row/delete';
+
+      var dataObj = {
+        tblId: this.id,
+        rowId: rowId
+      } 
+      var jsonData = JSON.stringify(dataObj, null, 2);
+      console.log(jsonData);
+      fetch(reqUrl, {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonData,
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Success:', data);
+        this.call_table();
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        alert("Something went wrong while writing changes to api");
+      });
+    },
   },
+
   mounted: function(){
     this.call_table();
   }

@@ -18,7 +18,7 @@ apiDataPath = os.path.join(scriptDir, "api-data")
 #-Flask App Definition----------------------------------------------------
 from flask import Flask, request, redirect, url_for, send_from_directory, session, render_template, send_file, Response
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 app.secret_key = "changeit"
 app.debug = True
 
@@ -65,7 +65,16 @@ def get_table_paras_obj():
 
 @app.route('/', methods=['GET'])
 def root_html():
-  return "<h2>the-last-table-editor api</h2>"
+  #return "<h2>the-last-table-editor api</h2>"
+  return send_from_directory('dist', 'index.html')
+
+@app.route('/js/<path:path>', methods=['GET'])
+def serve_static_js(path):
+  return send_from_directory('dist/js', path)
+
+@app.route('/css/<path:path>', methods=['GET'])
+def serve_static_css(path):
+  return send_from_directory('dist/css', path)
 
 #-API Section-------------------------------------------------------------
 
@@ -74,6 +83,7 @@ def api_test():
   
   dataObj = {
     "request-url": "/api/test",
+    "method": "GET",
     "status": "Ok",
     "timestamp": curTimestamp
   }
@@ -90,6 +100,7 @@ def api_config_get():
 
   dataObj = {
     "request-url": "/api/config/get",
+    "method": "GET",
     "status": "Ok",
     "timestamp": curTimestamp,
     "data": tblDataObj
@@ -125,6 +136,7 @@ def api_tableparas_get(tblId):
 
   dataObj = {
     "request-url": "/api/tableparas/get/"+tblId,
+    "method": "GET",
     "status": "Ok",
     "timestamp": curTimestamp,
     "data": fileDataObj,
@@ -207,6 +219,7 @@ def api_tableparas_add():
 
   resObj = {
     "request-url": "/api/tableparas/add",
+    "method": "POST",
     "status": "Ok",
     "timestamp": curTimestamp,
     "data": dataObj
@@ -260,6 +273,7 @@ def api_tableparas_edit():
 
   dataObj = {
     "request-url": "/api/config/set",
+    "method": "POST",
     "status": "Ok",
     "timestamp": curTimestamp,
     "data": dataIn
@@ -312,6 +326,7 @@ def api_tableparas_delete():
 
   dataObj = {
     "request-url": "/api/tableparas/delete",
+    "method": "POST",
     "status": "Ok",
     "timestamp": curTimestamp,
     "data": dataIn,
@@ -369,6 +384,7 @@ def api_tableconfig_apply(tblId):
 
   dataObj = {
     "request-url": "/api/tableconfig/apply/"+tblId,
+    "method": "POST",
     "status": "Ok",
     "timestamp": curTimestamp,
     "data": fileDataObj,
@@ -407,9 +423,131 @@ def api_table_get(tblId):
   dataObj = {
     "request-url": "/api/tableconfig/apply/"+tblId,
     "status": "Ok",
+    "method": "GET",
     "timestamp": curTimestamp,
     "data": fileDataObj,
     "id": tblId
+  }
+
+  resp = obj_to_json_http(dataObj)
+  return resp
+
+
+#--------------------------------------------------------------
+@app.route('/api/table/row/edit', methods=['POST'])
+def api_table_row_edit():
+
+  try:
+    objIn = json.loads(request.data)
+    tblId = objIn["tblId"]
+    rowId = objIn["rowId"]
+    rowData = objIn["data"]
+  except Exception as err:
+    msg = "valid ids missing in post data"
+    print(msg) 
+    print(str(err))
+    return msg, 400
+
+  confPath = os.path.join(apiDataPath, 't' + str(tblId) + '.json')
+  print(confPath)
+  try:
+    fileObj = open(confPath, "r")
+    fileStr = fileObj.read()
+    fileDataObj = json.loads(fileStr)
+    fileObj.close()
+  except Exception as err:
+    msg = "Table data file " + confPath + "damaged or not readable"
+    print(msg) 
+    print(str(err))
+    return msg, 404
+
+  if rowId == "new":
+    try:
+      fileDataObj["data"].append(rowData)
+    except Exception as err:
+      msg = "Unable to add new row to data file " + confPath
+      print(msg) 
+      print(str(err))
+      return msg, 404
+  else:
+    try:
+      fileDataObj["data"][rowId] = rowData
+    except Exception as err:
+      msg = "Unable to replace row "+ rowId +" in data file " + confPath
+      print(msg) 
+      print(str(err))
+      return msg, 404
+
+  fileStr = json.dumps(fileDataObj, indent=2)
+  fileObj = open(confPath, "w")
+  fileObj.write(fileStr)
+  fileObj.close()
+
+  #----------------------------------
+ 
+  dataObj = {
+    "request-url": "/api/table/row/edit",
+    "method": "POST",
+    "status": "Ok",
+    "timestamp": curTimestamp,
+    "tblId": tblId,
+    "rowId": rowId,
+    "data": rowData
+  }
+
+  resp = obj_to_json_http(dataObj)
+  return resp
+
+
+#--------------------------------------------------------------
+@app.route('/api/table/row/delete', methods=['POST'])
+def api_table_row_delete():
+
+  try:
+    objIn = json.loads(request.data)
+    tblId = objIn["tblId"]
+    rowId = objIn["rowId"]
+  except Exception as err:
+    msg = "valid ids missing in post data"
+    print(msg) 
+    print(str(err))
+    return msg, 400
+
+  confPath = os.path.join(apiDataPath, 't' + str(tblId) + '.json')
+  print(confPath)
+  try:
+    fileObj = open(confPath, "r")
+    fileStr = fileObj.read()
+    fileDataObj = json.loads(fileStr)
+    fileObj.close()
+  except Exception as err:
+    msg = "Table data file " + confPath + "damaged or not readable"
+    print(msg) 
+    print(str(err))
+    return msg, 404
+
+  try:
+    del fileDataObj["data"][rowId]
+  except Exception as err:
+    msg = "Unable to delete row "+ rowId +" in data file " + confPath
+    print(msg) 
+    print(str(err))
+    return msg, 404
+
+  fileStr = json.dumps(fileDataObj, indent=2)
+  fileObj = open(confPath, "w")
+  fileObj.write(fileStr)
+  fileObj.close()
+
+  #----------------------------------
+ 
+  dataObj = {
+    "request-url": "/api/table/row/delete",
+    "method": "POST",
+    "status": "Ok",
+    "timestamp": curTimestamp,
+    "tblId": tblId,
+    "rowId": rowId
   }
 
   resp = obj_to_json_http(dataObj)
