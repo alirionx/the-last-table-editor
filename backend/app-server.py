@@ -1,5 +1,11 @@
 #!/usr/bin/python3
 
+#-System ready check------------------------------------------------------
+
+from system_check import system_check
+system_check()
+
+
 #-Import needed modules---------------------------------------------------
 import os
 import sys
@@ -66,15 +72,15 @@ def get_table_paras_obj():
 @app.route('/', methods=['GET'])
 def root_html():
   #return "<h2>the-last-table-editor api</h2>"
-  return send_from_directory('dist', 'index.html')
+  return send_from_directory('../dist', 'index.html')
 
 @app.route('/js/<path:path>', methods=['GET'])
 def serve_static_js(path):
-  return send_from_directory('dist/js', path)
+  return send_from_directory('../dist/js', path)
 
 @app.route('/css/<path:path>', methods=['GET'])
 def serve_static_css(path):
-  return send_from_directory('dist/css', path)
+  return send_from_directory('../dist/css', path)
 
 #-API Section-------------------------------------------------------------
 
