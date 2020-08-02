@@ -1,8 +1,14 @@
 #!/bin/bash
 
 CONTAINER="ubuntu:focal"
-CONTAINERNAME='tmp_build_app_'$(date +"%H%S")
 BUILDSCRIPT="docker-build-script.sh"
+
+if [ -z "$BUILD_TAG" ]
+then
+  CONTAINERNAME='tmp_build_app_'$(date +"%H%S")
+else
+  CONTAINERNAME=$BUILD_TAG
+fi
 
 #echo $CONTAINERNAME
 docker run -it -v $PWD/:/data --name $CONTAINERNAME $CONTAINER /data/$BUILDSCRIPT
