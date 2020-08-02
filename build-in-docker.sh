@@ -11,5 +11,5 @@ else
 fi
 
 #echo $CONTAINERNAME
-docker run -it -v $PWD/:/data --name $CONTAINERNAME $CONTAINER /data/$BUILDSCRIPT
+docker run -v $PWD/:/data --name $CONTAINERNAME $CONTAINER /data/$BUILDSCRIPT
 #docker rm $CONTAINERNAME
