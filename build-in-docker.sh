@@ -12,4 +12,4 @@ fi
 
 #echo $CONTAINERNAME
 docker run -it -v $PWD/:/data --name $CONTAINERNAME $CONTAINER /data/$BUILDSCRIPT
-docker rm $CONTAINERNAME
+#docker rm $CONTAINERNAME
