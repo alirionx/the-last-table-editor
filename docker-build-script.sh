@@ -1,14 +1,15 @@
 #!/bin/bash
 
-export DEBIAN_FRONTEND=noninteractive
-apt update
+#export DEBIAN_FRONTEND=noninteractive
+#apt update
 #apt install -y nodejs npm
-apt install -y curl
-curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh
-bash nodesource_setup.sh
-apt install -y nodejs
+#apt install -y curl
+#curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh
+#bash nodesource_setup.sh
+#apt install -y nodejs
 
-npm install -g @vue/cli
+#npm install -g @vue/cli
+
 cd /data
 npm run build
 mkdir webapp

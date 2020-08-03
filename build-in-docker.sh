@@ -1,6 +1,7 @@
 #!/bin/bash
 
-CONTAINER="ubuntu:focal"
+#CONTAINER="ubuntu:focal"
+CONTAINER="dockereg.app-scape.lab/nodejs"
 BUILDSCRIPT="docker-build-script.sh"
 
 if [ -z "$BUILD_TAG" ]
