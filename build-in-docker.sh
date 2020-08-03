@@ -13,4 +13,4 @@ fi
 
 #echo $CONTAINERNAME
 docker run -i -v $PWD/:/the-last-table-editor --name $CONTAINERNAME $CONTAINER /the-last-table-editor/$BUILDSCRIPT
-#docker rm $CONTAINERNAME
+docker rm $CONTAINERNAME
