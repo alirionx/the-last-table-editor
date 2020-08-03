@@ -10,6 +10,7 @@
 
 #npm install -g @vue/cli
 
+cd /
 vue create -d --merge the-last-table-editor
 cd /the-last-table-editor
 npm run build
