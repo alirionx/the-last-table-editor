@@ -10,9 +10,8 @@
 
 #npm install -g @vue/cli
 
-cd /
-vue create -d --merge the-last-table-editor
 cd /the-last-table-editor
+npm install
 npm run build
 mkdir webapp
 cp -R run-app.sh webapp/
