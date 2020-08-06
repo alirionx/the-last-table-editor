@@ -187,12 +187,15 @@ def api_tableparas_add():
   for tblParas in tblDataObj:
     idList.append(tblParas["id"])
 
+  print(idList)
   newId = False
   i = 0
   while not newId:
     if i not in idList:
       newId = i
+      break
     i += 1
+
   print(newId)
   
   #----------------------------------
@@ -314,7 +317,7 @@ def api_tableparas_delete():
 
   if not os.path.isfile(flPath):
     msg = "invalid ID (file does not exist): " + flPath
-    print(str(err))
+    #print(str(err))
     print(msg) 
     return msg, 400
 
